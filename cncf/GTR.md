@@ -6,6 +6,7 @@
 - **Date Updated:** 2026-08-03
 - **Template Version:** v1.0
 - **Description:** A lightweight and extensible multi-cluster Kubernetes management tool
+- **Project Contacts:** August Simonelli (augusts@gmail.com), Mike Ng (ming@redhat.com), Qiu Jian (gothicqiujian@gmail.com)
 
 ## Day 0 - Planning Phase
 
