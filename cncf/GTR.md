@@ -137,9 +137,14 @@
 
 * **Describe the project’s resource requirements, including CPU, Network and Memory.**
 
-  OCM has controllers on the hub cluster, and agents on spoke clusters. Each has its own CPU/memory requirements.
-  The CPU/memory of the hub and agent can be set in ClusterManager/Klusterlet API or using clusteradm.
-  OCM requires the spoke cluster to be able to reach the API server of the hub cluster directly or via HTTP proxy.
+  OCM has controllers on the hub cluster, and agents on spoke clusters. Resource requirements are configurable via the ClusterManager/Klusterlet APIs or using clusteradm; the minimums below reflect a default install with no addons enabled:
+
+  | Deployment | Multi-node cluster | Single-node cluster |
+  |---|---|---|
+  | Hub (all controllers + operator) | ~100m CPU, ~500Mi memory | ~30m CPU, ~150Mi memory |
+  | Spoke (Klusterlet agent) | ~20m CPU, ~150Mi memory | ~6m CPU, ~50Mi memory |
+
+  These are minimums; actual usage scales with fleet size, ManifestWork volume, and addon activity. OCM requires the spoke cluster to be able to reach the hub cluster's API server directly or via HTTP proxy.
 
 * **Describe the project’s storage requirements, including its use of ephemeral and/or persistent storage.**
 
@@ -230,13 +235,13 @@
 
   * **Install cluster manager**
 
-    ```
+    ```bash
     helm install cluster-manager  --version <version> ocm/cluster-manager --namespace=open-cluster-management --create-namespace
     ```
 
   * **Install klusterlet**
 
-    ```
+    ```bash
     helm install klusterlet --version <version> ocm/klusterlet \
     --set klusterlet.clusterName=<cluster name> \
     --set-file bootstrapHubKubeConfig=<the bootstrap kubeconfig file of hub cluster> \
@@ -244,7 +249,9 @@
     --create-namespace
    ```
 
-  OCM includes an [addon framework](https://github.com/open-cluster-management-io/addon-framework) that provides a consistent way to activate built-in addons and develop new ones. Addons are easy to opt-in to, so you only activate what you need, keeping the install lightweight and reducing the attack surface. Community addons are available at https://github.com/open-cluster-management-io/addon-contrib and are installed via Helm charts.
+  OCM includes an [addon framework](https://github.com/open-cluster-management-io/addon-framework) that provides a consistent way to activate built-in addons and develop new ones. Addons are opt-in — none are active by default — keeping the install lightweight and reducing the attack surface.
+
+  A set of first-party addons is installable via `clusteradm install hub-addon --names <addon>`, including `argocd`, `argocd-agent`, and `governance-policy-framework`. These are maintained as sub-projects under the `open-cluster-management-io` GitHub organization, each with their own release cadence and maintainer list, and follow the same contributor ladder and governance model as the core project. Community addons are available at https://github.com/open-cluster-management-io/addon-contrib.
 
 * **How does an adopter test and validate the installation?**
 
